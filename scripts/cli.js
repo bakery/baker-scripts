@@ -25,6 +25,10 @@ const babelCli = function() {
   return findExecutable(executableLocations, 'babel-node');
 };
 
+const eslint = function() {
+  return findExecutable(executableLocations, 'eslint');
+};
+
 const babelTestRequire = path.resolve(__dirname, '../config/babel-test-require.js');
 const setupTests = path.resolve(__dirname, '../config/test-setup.js');
 
@@ -187,6 +191,21 @@ program
         stdio: 'inherit'
       }
     );    
+  });
+
+program
+  .command('lint <directory> [otherDirectories...]')
+  .action(function(directory, otherDirectories){
+    run(
+      eslint(),
+      [
+        '--config',
+        path.resolve(__dirname, '../config/.eslintrc'),
+        directory,
+        ...otherDirectories
+      ],
+      {stdio: 'inherit'}
+    );
   });
 
 program.parse(process.argv);
