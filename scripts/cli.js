@@ -29,6 +29,10 @@ const eslint = function() {
   return findExecutable(executableLocations, 'eslint');
 };
 
+const mongo = function() {
+  return findExecutable(executableLocations, 'mongodb-runner');
+};
+
 const babelTestRequire = path.resolve(__dirname, '../config/babel-test-require.js');
 const setupTests = path.resolve(__dirname, '../config/test-setup.js');
 
@@ -65,13 +69,20 @@ program
   });
 
 program
-  .command('run <script_path>')
+  .command('run <script_path> [otherArgs...]')
+  .option('-d, --node_dev', 'Sets NODE_ENV to development')
   .option('-f, --forever', 'Run script forever and ever')
   .option('-w, --watch <watch>', 'Watch directory and reload on change (only works with --forever)')
   .option('-d, --debug', 'Run script in debug mode')
   .option('-t, --test_run', 'Runs script in a test run mode and curls localhost:8000 after launching it')
   .option('-m, --with_mongo', 'Also starts a local version of MongoDB before running the script')
-  .action(function(script_path, options){
+  .action(function(script_path, otherArgs, options){
+    const environment = {};
+
+    if (options.node_dev) {
+      environment.NODE_ENV = 'development';
+    }
+
     if (!options.forever) {
       // normal mode
       run(
@@ -79,9 +90,10 @@ program
         [
           script_path,
           '--presets',
-          'es2015'
+          'es2015',
+          ...otherArgs
         ],
-        {stdio: 'inherit'}
+        {stdio: 'inherit', env: Object.assign({}, process.env, environment)}
       );
       return;
     }
@@ -91,6 +103,7 @@ program
       max: 3,
       command: babelCli(),
       args: ['--presets', 'es2015', '--plugins', 'transform-object-rest-spread'],
+      env: environment
     };
 
     if (options.watch) {
@@ -187,7 +200,6 @@ program
         'master'
       ], 
       {
-        cwd: path.resolve('..'),
         stdio: 'inherit'
       }
     );    
@@ -199,8 +211,6 @@ program
     run(
       eslint(),
       [
-        '--config',
-        path.resolve(__dirname, '../config/.eslintrc'),
         directory,
         ...otherDirectories
       ],
@@ -208,4 +218,18 @@ program
     );
   });
 
+program
+  .command('mongo')
+  .action(function(){
+    run(
+      mongo(),
+      [
+        'start',
+        '--name=dev',
+        '--purge',
+        'false'
+      ],
+      {stdio: 'inherit'}
+    );
+  });
 program.parse(process.argv);
