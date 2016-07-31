@@ -183,7 +183,7 @@ program
         'heroku', 
         [
           'config:set',
-          `APPLICATION_SETTINGS='${JSON.stringify(settings)}'`
+          `APPLICATION_SETTINGS=${JSON.stringify(settings)}`
         ],
         {stdio: 'inherit'}
       );

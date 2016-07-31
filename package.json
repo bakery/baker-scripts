@@ -1,6 +1,6 @@
 {
   "name": "baker-scripts",
-  "version": "0.5.0",
+  "version": "0.5.3",
   "description": "Dev dependencies and useful scripts for Baker based applications",
   "bin": {
     "baker": "./lib/cli.js"
