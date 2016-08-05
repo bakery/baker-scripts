@@ -1,6 +1,6 @@
 {
   "name": "baker-scripts",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Dev dependencies and useful scripts for Baker based applications",
   "bin": {
     "baker": "./lib/cli.js"
@@ -14,6 +14,7 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
+    "app-module-path": "^1.1.0",
     "babel-cli": "^6.11.4",
     "babel-plugin-transform-object-rest-spread": "^6.8.0",
     "babel-polyfill": "^6.9.1",
