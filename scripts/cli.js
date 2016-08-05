@@ -5,6 +5,7 @@ import program from 'commander';
 import path from 'path';
 import fs from 'fs';
 import run from 'cross-spawn';
+import { execSync } from 'child_process';
 import forever from 'forever-monitor';
 import { findExecutable } from './helpers';
  
@@ -189,20 +190,9 @@ program
       );
     }
 
-    run(
-      'git', 
-      [
-        'subtree',
-        'push',
-        '--prefix',
-        directory,
-        'heroku',
-        'master'
-      ], 
-      {
-        stdio: 'inherit'
-      }
-    );    
+    execSync(`git push ${serverGitRemote} \`git subtree split --prefix ${directory}\`:master --force`, {
+      stdio: 'inherit'
+    });
   });
 
 program
