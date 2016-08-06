@@ -155,16 +155,16 @@ program
 
 program
   .command('push_to_heroku <directory>')
-  .option('-s, --settings <settings>', 'Path to json file with settings')
+  .option('-s, --settings <settings>', 'Path to json file(s) with settings', val => val.split(','))
   .action(function(directory, options){
     const serverGitRemote = 'heroku';
     let settings;
 
     if (options.settings) {
       try {
-        settings = require(path.resolve(options.settings));
+        settings = Object.assign.apply(this, options.settings.map(s => require(path.resolve(s))));
       } catch (e) {
-        console.log(`Cannot load settings module from ${path.resolve(options.settings)}.json`);
+        console.log(`Cannot load settings module from modules ${path.resolve(options.settings)}`);
         process.exit(1);
       }
 
