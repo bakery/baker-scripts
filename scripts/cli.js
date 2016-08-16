@@ -7,7 +7,7 @@ import fs from 'fs';
 import run from 'cross-spawn';
 import { execSync } from 'child_process';
 import forever from 'forever-monitor';
-import { findExecutable } from './helpers';
+import { findExecutable, transpileJS } from './helpers';
  
 const executableLocations = [
   path.resolve(__dirname, '../node_modules/.bin/'),
@@ -140,17 +140,7 @@ program
 program
   .command('build <input_directory> <output_directory>')
   .action(function(input_directory, output_directory, options){
-    run(
-      babel(),
-      [
-        input_directory,
-        '--presets',
-        'es2015',
-        '-d',
-        output_directory
-      ],
-      {stdio: 'inherit'}
-    );
+    transpileJS(input_directory, output_directory);
   });
 
 program
