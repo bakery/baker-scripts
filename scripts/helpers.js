@@ -61,7 +61,7 @@ export function transpileJS(source, target) {
 
   files.forEach(function (file) {
     var code = babel.transformFileSync(file, {
-      presets: ['babel-preset-es2015'].map(require.resolve),
+      presets: ['babel-preset-es2015','react','stage-0'].map(require.resolve),
     }).code;
     var targetFile = path.join(targetDirectory, file.split(sourceDirectory)[1]);
     var targetFileDir = path.dirname(targetFile);
